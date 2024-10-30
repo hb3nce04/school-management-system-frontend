@@ -2,8 +2,9 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
 import { BRANDING } from "../utils/constants";
+import { memo } from "react";
 
-function Footer() {
+export const Footer = memo(() => {
 	return (
 		<Box
 			component="footer"
@@ -30,6 +31,4 @@ function Footer() {
 			</Typography>
 		</Box>
 	);
-}
-
-export default Footer;
+});

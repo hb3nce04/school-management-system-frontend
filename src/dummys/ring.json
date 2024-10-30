@@ -1,0 +1,27 @@
+[
+	{
+		"id": 1,
+		"name": "Ring 1",
+		"isActive": true
+	},
+	{
+		"id": 2,
+		"name": "Ring 2",
+		"isActive": false
+	},
+	{
+		"id": 3,
+		"name": "Ring 3",
+		"isActive": true
+	},
+	{
+		"id": 4,
+		"name": "Ring 4",
+		"isActive": false
+	},
+	{
+		"id": 5,
+		"name": "Ring 5",
+		"isActive": true
+	}
+]

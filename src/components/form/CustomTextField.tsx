@@ -1,8 +1,9 @@
+import { memo } from "react";
 import { TextField } from "@mui/material";
 import { Controller } from "react-hook-form";
 
 // TODO: typing
-function CustomTextField({ name, control, ...props }: any) {
+export const CustomTextField = memo(({ name, control, ...props }: any) => {
 	return (
 		<Controller
 			name={name}
@@ -20,6 +21,4 @@ function CustomTextField({ name, control, ...props }: any) {
 			)}
 		/>
 	);
-}
-
-export default CustomTextField;
+});

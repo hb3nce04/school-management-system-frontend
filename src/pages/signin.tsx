@@ -5,18 +5,18 @@ import {
 	Avatar,
 	Card,
 	Container,
-	IconButton,
+	Fab,
 	LinearProgress,
 	useColorScheme
 } from "@mui/material";
 import { BRANDING } from "../utils/constants";
-import CustomTextField from "../components/form/CustomTextField";
+import { CustomTextField } from "../components/form/CustomTextField";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import LoadingButton from "../components/form/LoadingButton";
+import { LoadingButton } from "../components/form/LoadingButton";
 import { useContext, useState } from "react";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
-import Footer from "../components/Footer";
+import { Footer } from "../components/Footer";
 import { AuthenticationContext } from "@toolpad/core";
 
 const SignInSchema = z.object({
@@ -50,18 +50,20 @@ export default function SigninPage() {
 
 	return (
 		<>
-			<IconButton
+			<Fab
 				sx={{
 					position: "absolute",
-					top: 15,
+					bottom: 15,
 					right: 15
 				}}
+				size={"small"}
+				color={"primary"}
 				onClick={() => {
 					setMode(mode == "dark" ? "light" : "dark");
 				}}
 			>
 				<DarkModeIcon />
-			</IconButton>
+			</Fab>
 			<Container component="main" maxWidth="xs" sx={{ mt: 10 }}>
 				{isLoading && <LinearProgress />}
 				<Card
