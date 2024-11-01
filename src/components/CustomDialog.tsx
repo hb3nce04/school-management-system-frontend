@@ -1,4 +1,5 @@
 import {
+	Box,
 	Dialog,
 	DialogActions,
 	DialogContent,
@@ -56,27 +57,25 @@ export const CustomDialog = memo(
 				open={open}
 				TransitionComponent={Transition}
 				PaperComponent={PaperComponent}
+				onClose={onClose}
 				fullWidth
 			>
 				<DialogTitle style={{ cursor: "move" }} id="dialog">
 					{title}
 				</DialogTitle>
-				<DialogContent>{content}</DialogContent>
-				<DialogActions>
-					<IconButton
-						sx={{ position: "absolute", right: 40, top: 8 }}
-						onClick={() => setFullScreen(!fullScreen)}
-					>
+				<Box sx={{ position: "absolute", right: 0, padding: 1 }}>
+					<IconButton onClick={() => setFullScreen(!fullScreen)}>
 						<FullscreenIcon />
 					</IconButton>
 					<IconButton
-						sx={{ position: "absolute", right: 8, top: 8 }}
-						onClick={() => onClose()}
+						onClick={() => onClose && onClose({}, "backdropClick")}
 					>
 						<CloseIcon />
 					</IconButton>
-					{actions}
-				</DialogActions>
+				</Box>
+
+				<DialogContent>{content}</DialogContent>
+				<DialogActions>{actions}</DialogActions>
 			</Dialog>
 		);
 	}

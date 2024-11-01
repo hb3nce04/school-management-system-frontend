@@ -1,14 +1,7 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import {
-	Avatar,
-	Card,
-	Container,
-	Fab,
-	LinearProgress,
-	useColorScheme
-} from "@mui/material";
+import { Avatar, Card, Container, Fab, useColorScheme } from "@mui/material";
 import { BRANDING } from "../utils/constants";
 import { CustomTextField } from "../components/form/CustomTextField";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,34 +11,52 @@ import { useContext, useState } from "react";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import { Footer } from "../components/Footer";
 import { AuthenticationContext } from "@toolpad/core";
+import { enqueueSnackbar } from "notistack";
 
 const SignInSchema = z.object({
-	username: z.string().min(3, "Rövid string"),
-	password: z.string().min(3, "rövid").max(20, "túl nagy")
+	username: z.string().min(3, "Túl rövid felhasználónév"),
+	password: z.string().min(3, "Túl rövid jelszó")
 });
 
 type SignInSchemaType = z.infer<typeof SignInSchema>;
 
-export default function SigninPage() {
+// TODO implement loading bar top of the screen
+export function SigninPage() {
 	const [isLoading, setLoading] = useState(false);
 	const { mode, setMode } = useColorScheme();
 
-	const { signIn } = useContext(AuthenticationContext);
+	const authContext = useContext(AuthenticationContext);
+	const signIn = authContext?.signIn;
 
 	const { handleSubmit, control } = useForm<SignInSchemaType>({
 		mode: "onChange",
 		resolver: zodResolver(SignInSchema),
 		defaultValues: {
-			username: "admin",
-			password: "admin"
+			username: "",
+			password: ""
 		}
 	});
 
-	const onSubmit: SubmitHandler<SignInSchemaType> = () => {
+	const onSubmit: SubmitHandler<SignInSchemaType> = (data) => {
 		setLoading(true);
 		setTimeout(() => {
-			signIn();
-		}, 2000);
+			setLoading(false);
+
+			if (
+				data &&
+				data.username !== "admin" &&
+				data.password !== "admin"
+			) {
+				enqueueSnackbar("Hibás felhasználónév vagy jelszó!", {
+					variant: "error"
+				});
+				return;
+			} else {
+				if (signIn) {
+					signIn();
+				}
+			}
+		}, 500);
 	};
 
 	return (
@@ -56,7 +67,7 @@ export default function SigninPage() {
 					bottom: 15,
 					right: 15
 				}}
-				size={"small"}
+				size={"medium"}
 				color={"primary"}
 				onClick={() => {
 					setMode(mode == "dark" ? "light" : "dark");
@@ -65,7 +76,6 @@ export default function SigninPage() {
 				<DarkModeIcon />
 			</Fab>
 			<Container component="main" maxWidth="xs" sx={{ mt: 10 }}>
-				{isLoading && <LinearProgress />}
 				<Card
 					sx={{
 						padding: 3,
@@ -99,12 +109,10 @@ export default function SigninPage() {
 							helperText="Adott azonosító"
 							name="username"
 							control={control}
-							type="text"
 							label="Felhasználónév"
 							autoFocus
 							fullWidth
 							required
-							disabled
 						/>
 						<CustomTextField
 							name="password"
@@ -113,7 +121,6 @@ export default function SigninPage() {
 							label="Jelszó"
 							fullWidth
 							required
-							disabled
 						/>
 						<LoadingButton
 							loading={isLoading}

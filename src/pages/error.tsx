@@ -1,7 +1,7 @@
 import { Container, Typography } from "@mui/material";
 
 // TODO + FIX SHOW ERRORS
-function Error() {
+export function ErrorPage() {
 	return (
 		<Container sx={{ textAlign: "center", mt: 2 }}>
 			<Typography variant="h2">Oops!</Typography>
@@ -11,5 +11,3 @@ function Error() {
 		</Container>
 	);
 }
-
-export default Error;
