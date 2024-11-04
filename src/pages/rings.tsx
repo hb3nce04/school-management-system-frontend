@@ -5,7 +5,7 @@ import { useDialogs } from "@toolpad/core";
 import { useState } from "react";
 import { CustomDialog } from "../components/CustomDialog";
 
-export function RingsPage() {
+export default function RingsPage() {
 	const [rows, setRows] = useState(ringJson);
 	const { open } = useDialogs();
 
@@ -31,44 +31,38 @@ export function RingsPage() {
 		const updatedRows = rows.map((row) =>
 			row.id === updatedRow.id ? updatedRow : row
 		);
-		console.log(rows);
 		setRows(updatedRows);
 		return updatedRow;
 	};
 
 	return (
-		<>
-			<DataGrid
-				rows={rows}
-				columns={columns}
-				processRowUpdate={processRowUpdate}
-				slots={{
-					toolbar: () => (
-						<Button
-							variant="contained"
-							sx={{ width: "auto", margin: 2 }}
-							onClick={() => {
-								open(CustomDialog, {
-									title: "Teszt",
-									content: () => (
-										<Typography>Test</Typography>
-									),
-									actions: (
-										<Button variant="contained">
-											Óra hozzáadása
-										</Button>
-									)
-								});
-							}}
-						>
-							Óra hozzáadása
-						</Button>
-					)
-				}}
-				checkboxSelection
-				disableRowSelectionOnClick
-			/>
-		</>
+		<DataGrid
+			rows={rows}
+			columns={columns}
+			processRowUpdate={processRowUpdate}
+			slots={{
+				toolbar: () => (
+					<Button
+						variant="contained"
+						sx={{ width: "auto", margin: 2 }}
+						onClick={() => {
+							open(CustomDialog, {
+								title: "Teszt",
+								content: () => <Typography>Test</Typography>,
+								actions: (
+									<Button variant="contained">
+										Óra hozzáadása
+									</Button>
+								)
+							});
+						}}
+					>
+						Óra hozzáadása
+					</Button>
+				)
+			}}
+			checkboxSelection
+			disableRowSelectionOnClick
+		/>
 	);
-	return <Typography>Rings</Typography>;
 }

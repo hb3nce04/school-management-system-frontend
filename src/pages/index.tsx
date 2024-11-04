@@ -1,14 +1,19 @@
+import { Session, SessionContext } from "@toolpad/core";
 import { Box, Typography } from "@mui/material";
-import StatCard from "../components/index/StatCard";
-import { QuoteCard } from "../components/index/QuoteCard";
+import StatCard from "../components/shared/StatCard";
+import { QuoteCard } from "../components/shared/QuoteCard";
+import { useContext } from "react";
 
-export function IndexPage() {
+// NOT TO LAZY LOAD
+export default function IndexPage() {
+	const session: Session = useContext(SessionContext);
+
 	return (
 		<>
 			<Typography variant="h4" sx={{ fontWeight: "light" }}>
 				Üdv a felületen,{" "}
 				<Typography variant="span" color="primary">
-					admin
+					{session?.user?.name}
 				</Typography>
 				!
 			</Typography>

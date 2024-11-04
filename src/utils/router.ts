@@ -1,26 +1,37 @@
 import { createBrowserRouter } from "react-router-dom";
+import { lazy } from "react";
 import App from "../App";
-import Layout from "../layouts/dashboard";
-import { IndexPage } from "../pages";
-import { RingsPage } from "../pages/rings";
-import { StudentsPage } from "../pages/students";
-import { TeachersPage } from "../pages/teachers";
-import { SigninPage } from "../pages/signin";
-import { ErrorPage } from "../pages/error";
-import { ClassesPage } from "../pages/classes";
-import { ClassroomsPage } from "../pages/classrooms";
+
+const RingsPage = lazy(() => import("../pages/rings"));
+const StudentsPage = lazy(() => import("../pages/students"));
+const TeachersPage = lazy(() => import("../pages/teachers"));
+const ClassesPage = lazy(() => import("../pages/classes"));
+const ClassroomsPage = lazy(() => import("../pages/classrooms"));
+
+import IndexPage from "../pages/index";
+import ErrorPage from "../pages/error";
+
+import { NotAuthRoute } from "../routes/NotAuthRoute";
+import { AuthRoute } from "../routes/AuthRoute";
+import { IndexRoute } from "../routes/IndexRoute";
 
 export const router = createBrowserRouter([
 	{
 		Component: App,
 		children: [
 			{
+				path: "/",
+				Component: IndexRoute,
+				ErrorBoundary: ErrorPage
+			},
+			{
 				path: "/dashboard",
-				Component: Layout,
+				Component: AuthRoute,
 				children: [
 					{
 						path: "/dashboard",
-						Component: IndexPage
+						Component: IndexPage,
+						index: true
 					},
 					{
 						path: "/dashboard/rings",
@@ -46,7 +57,7 @@ export const router = createBrowserRouter([
 			},
 			{
 				path: "/signin",
-				Component: SigninPage
+				Component: NotAuthRoute
 			},
 			{
 				path: "*",

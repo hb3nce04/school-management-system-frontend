@@ -1,6 +1,6 @@
 import { AppProvider, Session } from "@toolpad/core";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { extendTheme } from "@mui/material";
 import { Outlet, useNavigate } from "react-router-dom";
 import { BRANDING, NAVIGATION } from "./utils/constants.tsx";
@@ -9,7 +9,8 @@ import { useRouter } from "./hooks/useRouter.ts";
 import { huHU } from "@mui/x-data-grid/locales";
 import { SWRConfig } from "swr";
 import { fetcher } from "./utils/fetcher.ts";
-import LoadingBackdrop from "./components/index/LoadingBackdrop.tsx";
+import { instance } from "./utils/axios.ts";
+import { jwtDecode } from "jwt-decode";
 
 const theme = extendTheme(
 	{
@@ -31,36 +32,65 @@ const theme = extendTheme(
 	huHU
 );
 
+// Extract JWT token and decode its payload to get user info
+const getDecodedSession = (
+	token: string
+): { user: { id: string; name: string } } => {
+	const decoded = jwtDecode(token);
+	return {
+		user: {
+			id: decoded!.sub!.toString(),
+			name: decoded.username!
+		}
+	};
+};
+
 function App() {
 	const router = useRouter();
 	const navigate = useNavigate();
 
-	const [session, setSession] = useState<Session | null>({
-		user: {
-			name: "admin"
-		}
-	});
+	const [session, setSession] = useState<Session | null>();
 
-	const authentication = useMemo(() => {
+	useEffect(() => {
+		const savedToken = localStorage.getItem("token");
+		if (savedToken) {
+			setSession(getDecodedSession(savedToken));
+		}
+	}, []);
+
+	// TODO: TYPING
+	const authentication: any = useMemo(() => {
 		return {
-			signIn: () => {
-				setSession({
-					user: {
-						name: "admin"
-					}
-				});
-				localStorage.setItem("apikey", "teszt");
-				enqueueSnackbar("Sikeres bejelentkezés!", {
-					variant: "success"
-				});
-				navigate("/dashboard");
+			signIn: (username: string, password: string) => {
+				instance
+					.post("/auth", { username, password })
+					.then((res: any) => {
+						const { token } = res.data;
+						localStorage.setItem("token", token);
+						setSession(getDecodedSession(token));
+						enqueueSnackbar("Sikeres bejelentkezés!", {
+							variant: "success"
+						});
+						navigate("/dashboard");
+					})
+					.catch((err) => {
+						if (err.status === 401) {
+							enqueueSnackbar(
+								"Hibás felhasználónév vagy jelszó!",
+								{
+									variant: "error"
+								}
+							);
+						}
+					});
 			},
 			signOut: () => {
+				localStorage.removeItem("token");
 				setSession(null);
 				navigate("/signin");
 			}
 		};
-	}, []);
+	});
 
 	return (
 		<SnackbarProvider
@@ -70,7 +100,6 @@ function App() {
 				horizontal: "right"
 			}}
 		>
-			<LoadingBackdrop />
 			<AppProvider
 				navigation={NAVIGATION}
 				router={router}

@@ -7,11 +7,10 @@ import { CustomTextField } from "../components/form/CustomTextField";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { LoadingButton } from "../components/form/LoadingButton";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import { Footer } from "../components/Footer";
 import { AuthenticationContext } from "@toolpad/core";
-import { enqueueSnackbar } from "notistack";
 
 const SignInSchema = z.object({
 	username: z.string().min(3, "Túl rövid felhasználónév"),
@@ -21,8 +20,7 @@ const SignInSchema = z.object({
 type SignInSchemaType = z.infer<typeof SignInSchema>;
 
 // TODO implement loading bar top of the screen
-export function SigninPage() {
-	const [isLoading, setLoading] = useState(false);
+export default function SigninPage() {
 	const { mode, setMode } = useColorScheme();
 
 	const authContext = useContext(AuthenticationContext);
@@ -37,26 +35,9 @@ export function SigninPage() {
 		}
 	});
 
+	// promisetracker for this solution
 	const onSubmit: SubmitHandler<SignInSchemaType> = (data) => {
-		setLoading(true);
-		setTimeout(() => {
-			setLoading(false);
-
-			if (
-				data &&
-				data.username !== "admin" &&
-				data.password !== "admin"
-			) {
-				enqueueSnackbar("Hibás felhasználónév vagy jelszó!", {
-					variant: "error"
-				});
-				return;
-			} else {
-				if (signIn) {
-					signIn();
-				}
-			}
-		}, 500);
+		signIn?.(data.username, data.password);
 	};
 
 	return (
@@ -123,7 +104,6 @@ export function SigninPage() {
 							required
 						/>
 						<LoadingButton
-							loading={isLoading}
 							type="submit"
 							variant="contained"
 							fullWidth

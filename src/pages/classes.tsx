@@ -1,5 +1,5 @@
 import { Typography } from "@mui/material";
 
-export function ClassesPage() {
+export default function ClassesPage() {
 	return <Typography>Classes</Typography>;
 }

@@ -1,16 +1,18 @@
 import { Button, ButtonProps, CircularProgress } from "@mui/material";
 import { memo, ReactNode } from "react";
+import { usePromiseTracker } from "react-promise-tracker";
 
 interface LoadingButtonProps extends ButtonProps {
 	children: ReactNode;
-	loading?: boolean;
 }
 
 export const LoadingButton = memo(
-	({ loading, children, ...props }: LoadingButtonProps) => {
+	({ children, ...props }: LoadingButtonProps) => {
+		const { promiseInProgress } = usePromiseTracker();
+
 		return (
-			<Button {...props} disabled={props.disabled || loading}>
-				{loading && (
+			<Button {...props} disabled={props.disabled || promiseInProgress}>
+				{promiseInProgress && (
 					<CircularProgress
 						color="inherit"
 						size={"1.5rem"}

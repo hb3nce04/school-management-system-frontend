@@ -44,36 +44,34 @@ const columns: GridColDef[] = [
 	// }
 ];
 
-export function StudentsPage() {
+export default function StudentsPage() {
 	const { data, isLoading } = useSWR(
 		"/students?fields=id,birthCity,birthDate"
 	);
 
 	return (
-		<>
-			<DataGrid
-				rows={data}
-				columns={columns}
-				slots={{
-					toolbar: CustomToolbar
-				}}
-				loading={isLoading}
-				slotProps={{
-					loadingOverlay: {
-						variant: "skeleton",
-						noRowsVariant: "skeleton"
+		<DataGrid
+			rows={data}
+			columns={columns}
+			slots={{
+				toolbar: CustomToolbar
+			}}
+			loading={isLoading}
+			slotProps={{
+				loadingOverlay: {
+					variant: "skeleton",
+					noRowsVariant: "skeleton"
+				}
+			}}
+			initialState={{
+				pagination: {
+					paginationModel: {
+						pageSize: 5
 					}
-				}}
-				initialState={{
-					pagination: {
-						paginationModel: {
-							pageSize: 5
-						}
-					}
-				}}
-				checkboxSelection
-				disableRowSelectionOnClick
-			/>
-		</>
+				}
+			}}
+			checkboxSelection
+			disableRowSelectionOnClick
+		/>
 	);
 }
